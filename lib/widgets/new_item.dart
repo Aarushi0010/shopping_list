@@ -1,46 +1,44 @@
-import'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:shopping_list/data/categories.dart';
 import 'package:shopping_list/models/category.dart';
-import 'package:shopping_list/models/grocery_item.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-class NewItem extends StatefulWidget{
-  const NewItem({super.key}) ;
+
+class NewItem extends StatefulWidget {
+  const NewItem({super.key});
 
   @override
-  State<NewItem> createState(){
+  State<NewItem> createState() {
     return _NewItemState();
   }
 }
 
-class _NewItemState extends State<NewItem>{
+class _NewItemState extends State<NewItem> {
   final _formKey = GlobalKey<FormState>();
   var _enteredName = '';
-  var _enteredQuantity = 1 ;
+  var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
 
   void _saveItem() async {
-    if(_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      final url = Uri.http('shopping-list-a6cb3-default-rtdb.firebaseio.com','shopping-list.json' );
+      final url = Uri.http('shopping-list-a6cb3-default-rtdb.firebaseio.com',
+          'shopping-list.json');
       final response = await http.post(url,
-      headers: {
-        'Content-Type' : 'application/json',
-      },
-        body: json.encode(
-          {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: json.encode({
             'name': _enteredName,
             'quantity': _enteredQuantity,
             'category': _selectedCategory.title,
-          }
-        )
-      );
+          }));
 
       print(response.body);
       print(response.statusCode);
 
-      if(!context.mounted){
-        return ;
+      if (!context.mounted) {
+        return;
       }
 
       Navigator.of(context).pop();
@@ -53,11 +51,11 @@ class _NewItemState extends State<NewItem>{
   }
 
   @override
-  Widget build(context){
-    return Scaffold (
-      appBar: AppBar(
-        title : const Text('Add a new item'),
-      ),
+  Widget build(context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Add a new item'),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(12),
           child: Form(
@@ -77,9 +75,8 @@ class _NewItemState extends State<NewItem>{
                         return 'Must have 1 to 50 characters';
                       }
                       return null;
-
                     },
-                    onSaved: (value){
+                    onSaved: (value) {
                       _enteredName = value!;
                     },
                   ),
@@ -102,7 +99,7 @@ class _NewItemState extends State<NewItem>{
                             }
                             return null;
                           },
-                          onSaved: (value){
+                          onSaved: (value) {
                             _enteredQuantity = int.parse(value!);
                           },
                         ),
